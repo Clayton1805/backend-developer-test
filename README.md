@@ -1,5 +1,30 @@
 # Backend Developer Technical Assessment
 
+## Env global
+```
+# database
+DB_NAME=Plooral
+DB_USER=postgres
+DB_PWD=123456
+DB_HOST=127.0.0.1
+DB_PORT=5433
+DB_DIALECT=postgres
+
+# aws iam
+ACCESS_KEY_ID=
+SECRET_ACCESS_KEY=
+
+# aws S3
+BUCKET=plooral2
+KEY=feeds.json
+```
+## Env serverless
+```
+BASE_URL=https://wide-ears-burn.loca.lt
+BUCKET=plooral2
+KEY=feeds.json
+```
+
 ## Welcome!
 
 We're excited to have you participate in our Backend Developer technical assessment. This test is designed to gauge your expertise in backend development, with a focus on architectural and organizational skills. Below, you'll find comprehensive instructions to set up and complete the project. Remember, completing every step is not mandatory; some are optional but can enhance your application.
@@ -47,6 +72,7 @@ Using OpenAI's free moderation API, create a Lambda component that will evaluate
 
 1. Discuss scalability solutions for the job moderation feature under high load conditions. Consider that over time the system usage grows significantly, to the point where we will have thousands of jobs published every hour. Consider the API will be able to handle the requests, but the serverless component will be overwhelmed with requests to moderate the jobs. This will affect the database connections and calls to the OpenAI API. How would you handle those issues and what solutions would you implement to mitigate the issues?
 2. Propose a strategy for delivering the job feed globally with sub-millisecond latency. Consider now that we need to provide a low latency endpoint that can serve the job feed content worldwide. Using AWS as a cloud provider, what technologies would you need to use to implement this feature and how would you do it?
+clowdFront talvez seja solução
 
 ## Instructions
 

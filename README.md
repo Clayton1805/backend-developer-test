@@ -1,49 +1,81 @@
 # Backend Developer Technical Assessment
 
-## Env global
+## Primeiros passos
+
+- Antes de tudo abra uma conta na [aws](https://aws.amazon.com/) e no [serverless.com](https://www.serverless.com/).
+- Crie um usuário [iam na aws](https://us-east-1.console.aws.amazon.com/iam/home) com permissão 'AdministratorAccess' crie sua chave de acesso para esse usuário e guarde as credenciais.
+- Intale o Docker e docker compose na sua maquina, [tutorial](https://docs.docker.com/get-docker/).
+
+## Environment
+### Env global
+- Na raiz do projeto crie um arquivo com o no .env e cole o código abaixo dentro desse arquivo.
+
 ```
+# api
+PORT=3001
+
 # database
 DB_NAME=Plooral
 DB_USER=postgres
 DB_PWD=123456
-DB_HOST=127.0.0.1
-DB_PORT=5433
+DB_HOST=postgres
+DB_PORT=5432
 DB_DIALECT=postgres
+DB_PORT_LOCAL=5433
 
 # aws iam
 ACCESS_KEY_ID=
 SECRET_ACCESS_KEY=
 
 # aws S3
-BUCKET=plooral2
-KEY=feeds.json
-```
-## Env serverless
-```
-BASE_URL=https://wide-ears-burn.loca.lt
-BUCKET=plooral2
+BUCKET=plooral
 KEY=feeds.json
 ```
 
-## Welcome!
+- Depois pegue suas credenciais do usuario aws iam e cole nas chaves ACCESS_KEY_ID e SECRET_ACCESS_KEY.
 
-We're excited to have you participate in our Backend Developer technical assessment. This test is designed to gauge your expertise in backend development, with a focus on architectural and organizational skills. Below, you'll find comprehensive instructions to set up and complete the project. Remember, completing every step is not mandatory; some are optional but can enhance your application.
+### Env serverless
+- Crie outro arquivo .env só que dessa vez dentro da pasta serverless, e cole o código a baixo la dentro (não se preocupe com a variável BASE_URL ela será preenchida nos próximos passos).
 
-## Assessment Overview
+```
+BASE_URL=
+BUCKET=plooral
+KEY=feeds.json
+```
 
-Your task is to develop a NodeJS API for a job posting management application. Analyze the application details and use cases, and translate them into functional endpoints.
+### Build
 
-### Application Components
+- Primeiro abra um terminal na raiz do projeto e rode o seguinte comando:
+```
+docker-compose up
+```
+- No final do processo o servidor já estará rodando no `http://localhost:3001` deixe esse terminal aberto rodando a api.
+- Em um novo terminal rode o comando:
+```
+docker ps
+```
+- Ele vai listar todos os seus container que estão rodando, procure pelo container `api` e copie o seu CONTAINER ID
 
-Your solution should incorporate the following components and libraries:
+- Rode o comando a baixo para acessar o terminal bash do container api, substituindo o `<CONTAINER ID>` pelo id que você copiou no ultimo passo:
+```
+docker exec -it <CONTAINER ID> bash
+```
+- No terminal do contêiner rode o comando a baixo para criar uma URL do seu serviço local para que a aws lambda possa consultar o serviço na nuvem:
+```
+lt --port 3001
+```
+- Não feche o terminal deixe o serviço rodando, copie a URL fornecida e cole ela no arquivo .env na pasta serverless `BASE_URL=<url gerada>` e salve o arquivo.
 
-1. **Relational Database**: Utilize a SQL database (PostgreSQL 16) with two tables (`companies` and `jobs`). The DDL script in the `ddl` folder of this repository initializes these tables. The `companies` table is pre-populated with fictitious records, which you should not modify. Focus on managing records in the `jobs` table. You don't need to worry about setting up the database, consider the database is already running in the cloud. Your code only needs to handle database connections. To test your solution, use your own database running locally or in the server of your choice.
-
-2. **REST API**: Develop using NodeJS (version 20) and ExpressJS. This API will manage the use cases described below.
-
-3. **Serverless Environment**: Implement asynchronous, event-driven logic using AWS Lambda and AWS SQS for queue management.
-
-4. **Job Feed Repository**: Integrate a job feed with AWS S3. This feed should periodically update a JSON file reflecting the latest job postings.
+- Em um novo terminal abra novamente o bash do contêiner:
+```
+docker exec -it <CONTAINER ID> bash
+```
+- E execute o comando a baixo para se logar no serverless:
+```
+serverless login
+```
+- Como você esta dentro de um contêiner o site não abrira automaticamente no seu browser por isso copie a url informada e cole no seu browser a rota, ela vai te levar para uma pagina de login crie sua conta ou faça o login, ao final você recebera essa mensagem no terminal `You are now logged into the Serverless Framework`.
+- Veja novamente o conteúdo de GET `http://localhost:3001/feed`, se ele continuar vazio espere 1 minuto e o estado do arquivo no S3 vai atualizar.
 
 ### User Actions
 
@@ -71,36 +103,14 @@ Using OpenAI's free moderation API, create a Lambda component that will evaluate
 ### Bonus Questions
 
 1. Discuss scalability solutions for the job moderation feature under high load conditions. Consider that over time the system usage grows significantly, to the point where we will have thousands of jobs published every hour. Consider the API will be able to handle the requests, but the serverless component will be overwhelmed with requests to moderate the jobs. This will affect the database connections and calls to the OpenAI API. How would you handle those issues and what solutions would you implement to mitigate the issues?
+   
 2. Propose a strategy for delivering the job feed globally with sub-millisecond latency. Consider now that we need to provide a low latency endpoint that can serve the job feed content worldwide. Using AWS as a cloud provider, what technologies would you need to use to implement this feature and how would you do it?
-clowdFront talvez seja solução
 
-## Instructions
+RESPOSTA: AWS clowdFront talvez seja uma solução.
 
-1. Fork this repository and create a branch named after yourself.
-2. Develop the solution in your branch.
-3. Use your AWS account or other environment of your choice to test and validate your solution.
-4. Update the README with setup and execution instructions.
-5. Complete your test by sending a message through the Plooral platform with your repository link and branch name.
+## Próximos passos
 
-## Evaluation Criteria
+- Implementar a Extra Feature.
+- Implementar testes na api.
+- Mudar a lógica do aws lambda para em vez de atualizar o estado do arquivo S3 a cada um minuto atualizar toda vez que um novo job for publicado.
 
-We will assess:
-
-- Knowledge of JavaScript, Node.js, Express.js.
-- Proficiency with serverless components (Lambda, SQS).
-- Application structure and layering.
-- Effective use of environment variables.
-- Implementation of unit tests, logging, and error handling.
-- Documentation quality and code readability.
-- Commit history and overall code organization.
-
-Good luck, and we're looking forward to seeing your innovative solutions!
-Implementation of the user actions and integration features is considered mandatory for the assessment. The extra feature and the bonus questions are optional, but we encourage you to complete them as well, it will give you an additional edge over other candidates.
-
-## A Note on the Use of AI Tools
-
-In today's evolving tech landscape, AI tools such as ChatGPT and GitHub Copilot have become valuable resources for developers. We recognize the potential of these tools in aiding problem-solving and coding. While we do not prohibit the use of AI in this assessment, we encourage you to primarily showcase your own creativity and problem-solving skills. Your ability to think critically and design solutions is what we're most interested in.
-
-That said, if you do choose to utilize AI tools, we would appreciate it if you could share details about this in your submission. Include the prompts you used, how you interacted with the AI, and how it influenced your development process. This will give us additional insight into your approach to leveraging such technologies effectively.
-
-Remember, this assessment is not just about getting to the solution, but also about demonstrating your skills, creativity, and how you navigate and integrate the use of emerging technologies in your work.

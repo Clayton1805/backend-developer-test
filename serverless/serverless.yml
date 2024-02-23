@@ -1,0 +1,31 @@
+org: clayton1805
+app: serverless2
+service: serverless4
+useDotenv: true
+
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: 'us-east-1'
+  iam:
+    role:
+     statements:
+       - Effect: "Allow"
+         Action:
+           - "s3:ListBucket"
+           - "s3:PutObject"
+           - "s3:CreateBucket"
+         Resource:
+           - "arn:aws:s3:::*"
+
+functions:
+  api:
+    handler: handler.plooral
+    events:
+      - schedule: rate(1 minute)
+    environment:
+      BASE_URL: ${env:BASE_URL}
+      BUCKET: ${env:BUCKET}
+      KEY: ${env:KEY}

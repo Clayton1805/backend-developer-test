@@ -1,6 +1,6 @@
 org: clayton1805
-app: serverless2
-service: serverless4
+app: clayton
+service: clayton
 useDotenv: true
 
 frameworkVersion: "3"

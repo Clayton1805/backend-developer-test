@@ -1,0 +1,32 @@
+version: '3.5'
+
+services:
+  postgres:
+    container_name: postgres-plooral
+    image: postgres
+    environment:
+      - POSTGRES_USER=$DB_USER
+      - POSTGRES_PASSWORD=$DB_PWD
+      - POSTGRES_DB=$DB_NAME
+    ports:
+      - $DB_PORT_LOCAL:5432
+  api:
+    image: node:latest
+    container_name: api
+    restart: always
+    env_file: ./.env
+    depends_on:
+      - postgres
+    ports:
+      - $PORT:$PORT
+    volumes:
+      - .:/usr/src/app
+    working_dir: /usr/src/app
+    command: > 
+      bash -c "npm install && npm install -g serverless && npm install -g localtunnel 
+      && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all | node src/server.js"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"

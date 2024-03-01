@@ -8,7 +8,7 @@
 
 ## Environment
 ### Env global
-- Na raiz do projeto crie um arquivo com o no .env e cole o código abaixo dentro desse arquivo.
+- Na raiz do projeto crie um arquivo com o nome .env e cole o código a baixo dentro desse arquivo.
 
 ```
 # api
@@ -35,7 +35,7 @@ KEY=feeds.json
 - Depois pegue suas credenciais do usuario aws iam e cole nas chaves ACCESS_KEY_ID e SECRET_ACCESS_KEY.
 
 ### Env serverless
-- Crie outro arquivo .env só que dessa vez dentro da pasta serverless, e cole o código a baixo la dentro (não se preocupe com a variável BASE_URL ela será preenchida nos próximos passos).
+- Crie outro arquivo .env só que dessa vez dentro da pasta `serverless`, e cole o código a baixo la dentro (não se preocupe com a variável BASE_URL ela será preenchida nos próximos passos).
 
 ```
 BASE_URL=
@@ -50,6 +50,7 @@ KEY=feeds.json
 docker-compose up
 ```
 - No final do processo o servidor já estará rodando no `http://localhost:3001` deixe esse terminal aberto rodando a api.
+- Um banco de dados PostgreSQL também estará rodando na porta 5433 da sua máquina, já com 3 companies inseridas (o modelo do banco e as companies pré inseridas seguiram as especificações do arquivo models.sql dentro da pasta ddl).
 - Em um novo terminal rode o comando:
 ```
 docker ps
